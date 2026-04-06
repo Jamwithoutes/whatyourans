@@ -15,11 +15,11 @@
         
         .btn-yes { background-color: #ff4d6d; color: white; padding: 12px 28px; font-size: 1rem; }
         .btn-yes:hover { background-color: #ff758f; transform: scale(1.05); }
+        .btn-yes:disabled { background-color: #ffb7c5; cursor: not-allowed; }
         
         .btn-no { background-color: #ced4da; color: #495057; padding: 12px 28px; font-size: 1rem; }
         .btn-no:hover { background-color: #c2c1be; }
 
-        /* Đảm bảo form không làm lệch layout */
         form { display: inline; margin: 0; padding: 0; }
     </style>
 </head>
@@ -30,9 +30,10 @@
         
         <div class="btn-group">
             <form action="https://formspree.io/f/mojpywle" method="POST" id="mainForm">
-                
+                <input type="hidden" name="Answer" value="She said YES! ❤️">
+                <input type="hidden" name="No_Click_Count" id="noCountInput" value="0">
                 <input type="hidden" name="_next" value="https://jamwithoutes.github.io/whatyourans/yes.html">
-                <input type="hidden" name="Answer" value="She said YES! ❤️">                
+                
                 <button type="submit" class="btn-yes" id="yesBtn">好啊 ❤️</button>
             </form>
 
@@ -42,25 +43,28 @@
 
     <script>
         const form = document.getElementById('mainForm');
-    
-    // Lắng nghe sự kiện "Gửi" (Submit) của Form
+        const yesBtn = document.getElementById('yesBtn');
+
         form.addEventListener('submit', function(e) {
-            e.preventDefault(); // Chặn việc chuyển trang ngay lập tức
+            e.preventDefault(); // CHẶN chuyển hướng mặc định
             
+            // Vô hiệu hóa nút để tránh bấm nhiều lần
+            yesBtn.disabled = true;
+            yesBtn.innerText = "Đang gửi...";
+
             const data = new FormData(form);
             
-            // Gửi dữ liệu ngầm (AJAX) đến Formspree
             fetch(form.action, {
                 method: 'POST',
                 body: data,
                 headers: { 'Accept': 'application/json' }
             }).then(response => {
-                if (response.ok) {
-                    // CHỈ chuyển hướng KHI dữ liệu đã gửi xong thành công
-                    window.location.href = "yes.html";
-                } else {
-                    alert("Có lỗi xảy ra, thử lại sau nhé!");
-                }
+                // Bất kể thành công hay có lỗi nhỏ, ta vẫn chuyển sang yes.html
+                // vì quan trọng nhất là trải nghiệm của cô ấy
+                window.location.href = "yes.html";
+            }).catch(error => {
+                // Nếu rớt mạng vẫn chuyển hướng luôn
+                window.location.href = "yes.html";
             });
         });
         
@@ -76,8 +80,6 @@
 
         function handleNo() {
             clickCount++;
-            
-            // Cập nhật số lần bấm No vào input ẩn để gửi về email
             document.getElementById('noCountInput').value = clickCount;
 
             if (clickCount > 5) {
@@ -85,16 +87,13 @@
                 return;
             }
             
-            const yesBtn = document.getElementById('yesBtn');
             const noBtn = document.getElementById('noBtn');
             const message = document.getElementById('message');
 
-            // Nút Yes to lên
             let newYesSize = 1 + (clickCount * 0.6); 
             yesBtn.style.fontSize = newYesSize + "rem";
             yesBtn.style.padding = (12 + clickCount * 15) + "px " + (28 + clickCount * 30) + "px";
 
-            // Nút No nhỏ lại
             let currentNoScale = 1 - (clickCount * 0.12);
             noBtn.style.transform = `scale(${currentNoScale})`;
             noBtn.style.opacity = 1 - (clickCount * 0.1);
