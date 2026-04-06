@@ -44,27 +44,27 @@
     <script>
         const form = document.getElementById('mainForm');
         const yesBtn = document.getElementById('yesBtn');
-
+    
         form.addEventListener('submit', function(e) {
-            e.preventDefault(); // CHẶN chuyển hướng mặc định
-            
-            // Vô hiệu hóa nút để tránh bấm nhiều lần
+            e.preventDefault();
+    
             yesBtn.disabled = true;
-            yesBtn.innerText = "Đang gửi...";
-
+            yesBtn.innerText = "正在送出... ❤️";
+    
             const data = new FormData(form);
-            
+    
             fetch(form.action, {
                 method: 'POST',
                 body: data,
                 headers: { 'Accept': 'application/json' }
-            }).then(response => {
-                // Bất kể thành công hay có lỗi nhỏ, ta vẫn chuyển sang yes.html
-                // vì quan trọng nhất là trải nghiệm của cô ấy
-                window.location.href = "yes.html";
-            }).catch(error => {
-                // Nếu rớt mạng vẫn chuyển hướng luôn
-                window.location.href = "yes.html";
+            })
+            .then(() => {
+                // Always redirect to your page (absolute URL is safer)
+                window.location.href = "https://jamwithoutes.github.io/whatyourans/yes.html";
+            })
+            .catch(() => {
+                // Even if fetch fails, still redirect
+                window.location.href = "https://jamwithoutes.github.io/whatyourans/yes.html";
             });
         });
         
