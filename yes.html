@@ -47,6 +47,7 @@
             color: #590d22;
             font-size: 1.6rem;
             line-height: 1.7;
+            min-height: 3.5em; /* Giữ chỗ để card không bị nhảy khi chữ hiện ra */
         }
 
         .hearts-container {
@@ -79,30 +80,28 @@
     
     <div class="card">
         <h1 id="title">耶！！❤️</h1>
-        <p id="message">謝謝妳願意給我這個機會！<br>我會好好珍惜的。</p>
-    </div>
+        <p id="message"></p> </div>
 
     <script>
         // === Spectacular Confetti ===
         function launchConfetti() {
             const duration = 8000;
             const end = Date.now() + duration;
-
             const colors = ['#ff4d6d', '#ff758f', '#ffb3c6', '#ff9eb7', '#ffffff'];
 
             (function frame() {
                 confetti({
-                    particleCount: 8,
+                    particleCount: 2,
                     angle: 60,
-                    spread: 70,
-                    origin: { x: 0.1, y: Math.random() },
+                    spread: 55,
+                    origin: { x: 0 },
                     colors: colors
                 });
                 confetti({
-                    particleCount: 8,
+                    particleCount: 2,
                     angle: 120,
-                    spread: 70,
-                    origin: { x: 0.9, y: Math.random() },
+                    spread: 55,
+                    origin: { x: 1 },
                     colors: colors
                 });
 
@@ -116,46 +115,57 @@
         function createFloatingItem() {
             const item = document.createElement('div');
             item.classList.add('floating-heart');
-            
-            // Randomly show heart or rose
             item.innerHTML = Math.random() > 0.6 ? '❤️' : '🌹';
             item.style.left = Math.random() * 100 + 'vw';
             item.style.animationDuration = (Math.random() * 4 + 5) + 's';
             item.style.fontSize = (Math.random() * 22 + 20) + 'px';
-            item.style.opacity = Math.random() * 0.7 + 0.6;
             
             document.getElementById('hearts').appendChild(item);
-            
-            setTimeout(() => item.remove(), 12000);
+            setTimeout(() => item.remove(), 10000);
         }
 
-        // === Typing Effect ===
-        function typeText(element, text, speed = 60) {
+        // === Fixed Typing Effect (Supports HTML) ===
+        function typeText(element, htmlContent, speed = 80) {
             let i = 0;
-            element.innerHTML = '';
-            const timer = setInterval(() => {
-                if (i < text.length) {
-                    element.innerHTML += text.charAt(i);
-                    i++;
-                } else {
-                    clearInterval(timer);
+            element.innerHTML = "";
+            
+            // Hàm này giúp đánh chữ từng ký tự nhưng vẫn nhận diện được thẻ <br>
+            function typing() {
+                if (i < htmlContent.length) {
+                    // Nếu gặp thẻ <br>, ta nhảy qua 4 ký tự của thẻ đó
+                    if (htmlContent.substring(i, i + 4) === "<br>") {
+                        element.innerHTML += "<br>";
+                        i += 4;
+                    } else {
+                        element.innerHTML += htmlContent.charAt(i);
+                        i++;
+                    }
+                    setTimeout(typing, speed);
                 }
-            }, speed);
+            }
+            typing();
         }
 
-        // Initialize everything
+        // Initialize
         window.onload = () => {
             launchConfetti();
             
-            // Typing effect
-            typeText(document.getElementById('message'), "謝謝妳願意給我這個機會！<br>我會好好珍惜的。", 80);
+            // Bắt đầu hiệu ứng đánh chữ
+            const msgElement = document.getElementById('message');
+            const textToType = "謝謝妳願意給我這個機會！<br>我會好好珍惜的。";
+            typeText(msgElement, textToType, 100);
 
-            // Continuous floating hearts
-            setInterval(createFloatingItem, 280);
+            // Tạo trái tim bay
+            setInterval(createFloatingItem, 300);
             
-            // Extra burst after 1.5 seconds
+            // Pháo hoa lớn sau 1.5s
             setTimeout(() => {
-                confetti({ particleCount: 200, spread: 120, origin: { y: 0.6 } });
+                confetti({
+                    particleCount: 150,
+                    spread: 100,
+                    origin: { y: 0.6 },
+                    colors: ['#ff4d6d', '#ffffff']
+                });
             }, 1500);
         };
     </script>
