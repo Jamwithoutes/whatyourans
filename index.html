@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>給你啦 ❤️</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #fff0f3; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; overflow: hidden; }
+        .card { background: white; padding: 2rem; border-radius: 20px; box-shadow: 0 10px 25px rgba(255,182,193,0.5); text-align: center; max-width: 450px; width: 90%; transition: all 0.3s; }
+        h1 { color: #ff4d6d; margin-bottom: 10px; }
+        p { color: #590d22; font-size: 1.1rem; min-height: 4em; display: flex; align-items: center; justify-content: center; }
+        .btn-group { margin-top: 30px; display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 15px; }
+        
+        button { border: none; border-radius: 50px; cursor: pointer; font-weight: bold; transition: all 0.3s ease-in-out; white-space: nowrap; }
+        
+        .btn-yes { background-color: #ff4d6d; color: white; padding: 12px 28px; font-size: 1rem; }
+        .btn-yes:hover { background-color: #ff758f; transform: scale(1.05); }
+        
+        .btn-no { background-color: #ced4da; color: #495057; padding: 12px 28px; font-size: 1rem; }
+        .btn-no:hover { background-color: #c2c1be; }
+
+        /* Đảm bảo form không làm lệch layout */
+        form { display: inline; margin: 0; padding: 0; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1 id="heading">讀完了嗎？✨</h1>
+        <p id="message">我考慮了很久才把這個網站寄給你。<br>你願意給我們一個機會嗎？</p>
+        
+        <div class="btn-group">
+            <form action="https://formspree.io/f/mojpywle" method="POST" id="mainForm">
+                <input type="hidden" name="Answer" value="She said YES! ❤️">
+                <input type="hidden" name="No_Click_Count" id="noCountInput" value="0">
+                
+                <input type="hidden" name="_next" value="https://yourusername.github.io/your-repo-name/yes.html">
+                
+                <button type="submit" class="btn-yes" id="yesBtn">好啊 ❤️</button>
+            </form>
+
+            <button type="button" class="btn-no" id="noBtn" onclick="handleNo()">不要!!!</button>
+        </div>
+    </div>
+
+    <script>
+        let clickCount = 0;
+        const messages = [
+            "真的不要嗎？🥺",
+            "再考慮一下下",
+            "我會很傷心的... 💔",
+            "我也會煮飯哦！🍲 還會寫程式",
+            "真的真的最後一次機會了喔...",
+            "好啦，只能點「好啊」"
+        ];
+
+        function handleNo() {
+            clickCount++;
+            
+            // Cập nhật số lần bấm No vào input ẩn để gửi về email
+            document.getElementById('noCountInput').value = clickCount;
+
+            if (clickCount > 5) {
+                window.location.href = "no.html"; 
+                return;
+            }
+            
+            const yesBtn = document.getElementById('yesBtn');
+            const noBtn = document.getElementById('noBtn');
+            const message = document.getElementById('message');
+
+            // Nút Yes to lên
+            let newYesSize = 1 + (clickCount * 0.6); 
+            yesBtn.style.fontSize = newYesSize + "rem";
+            yesBtn.style.padding = (12 + clickCount * 15) + "px " + (28 + clickCount * 30) + "px";
+
+            // Nút No nhỏ lại
+            let currentNoScale = 1 - (clickCount * 0.12);
+            noBtn.style.transform = `scale(${currentNoScale})`;
+            noBtn.style.opacity = 1 - (clickCount * 0.1);
+
+            message.innerText = messages[clickCount - 1];
+        }
+    </script>
+</body>
+</html>
