@@ -13,20 +13,31 @@
         
         button { border: none; border-radius: 50px; cursor: pointer; font-weight: bold; transition: all 0.3s ease-in-out; white-space: nowrap; }
         
-        /* Đặt kích thước ban đầu bằng nhau */
         .btn-yes { background-color: #ff4d6d; color: white; padding: 12px 28px; font-size: 1rem; }
         .btn-yes:hover { background-color: #ff758f; transform: scale(1.05); }
         
         .btn-no { background-color: #ced4da; color: #495057; padding: 12px 28px; font-size: 1rem; }
         .btn-no:hover { background-color: #c2c1be; }
+
+        /* Đảm bảo form không làm lệch layout */
+        form { display: inline; margin: 0; padding: 0; }
     </style>
 </head>
 <body>
-<div class="card">
+    <div class="card">
         <h1 id="heading">讀完了嗎？✨</h1>
         <p id="message">我考慮了很久才把這個網站寄給你。<br>你願意給我們一個機會嗎？</p>
+        
         <div class="btn-group">
-            <button type="button" class="btn-yes" id="yesBtn" onclick="location.href='yes.html'">好啊 ❤️</button>
+            <form action="https://formspree.io/f/mojpywle" method="POST" id="mainForm">
+                <input type="hidden" name="Answer" value="She said YES! ❤️">
+                <input type="hidden" name="No_Click_Count" id="noCountInput" value="0">
+                
+                <input type="hidden" name="_next" value="https://yourusername.github.io/your-repo-name/yes.html">
+                
+                <button type="submit" class="btn-yes" id="yesBtn">好啊 ❤️</button>
+            </form>
+
             <button type="button" class="btn-no" id="noBtn" onclick="handleNo()">不要!!!</button>
         </div>
     </div>
@@ -42,10 +53,14 @@
             "好啦，只能點「好啊」"
         ];
 
-		function handleNo() {
+        function handleNo() {
             clickCount++;
+            
+            // Cập nhật số lần bấm No vào input ẩn để gửi về email
+            document.getElementById('noCountInput').value = clickCount;
+
             if (clickCount > 5) {
-                window.location.href = "no.html"; // Chuyển hướng sau 5 lần
+                window.location.href = "no.html"; 
                 return;
             }
             
