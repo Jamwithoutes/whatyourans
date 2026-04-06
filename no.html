@@ -11,7 +11,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(180deg, #666666 60%, #d1cfd0 40%);
+            background: linear-gradient(135deg, #666666 60%, #d1cfd0 40%);
             font-family: 'Segoe UI', Tahoma, sans-serif;
             overflow: hidden;
         }
@@ -76,7 +76,7 @@
         function createTear() {
             const tear = document.createElement('div');
             tear.classList.add('tears');
-            tear.innerHTML = '💧';
+            tear.innerHTML = '💔';
             tear.style.left = Math.random() * 100 + 'vw';
             tear.style.animationDuration = (Math.random() * 2 + 3) + 's';
             tear.style.fontSize = (Math.random() * 12 + 18) + 'px';
