@@ -30,10 +30,9 @@
         
         <div class="btn-group">
             <form action="https://formspree.io/f/mojpywle" method="POST" id="mainForm">
-                <input type="hidden" name="Answer" value="She said YES! ❤️">
-                <input type="hidden" name="No_Click_Count" id="noCountInput" value="0">
-                <input type="hidden" name="_next" value="https://jamwithoutes.github.io/whatyourans/yes.html">
                 
+                <input type="hidden" name="_next" value="https://jamwithoutes.github.io/whatyourans/yes.html">
+                <input type="hidden" name="Answer" value="She said YES! ❤️">                
                 <button type="submit" class="btn-yes" id="yesBtn">好啊 ❤️</button>
             </form>
 
@@ -42,6 +41,29 @@
     </div>
 
     <script>
+        const form = document.getElementById('mainForm');
+    
+    // Lắng nghe sự kiện "Gửi" (Submit) của Form
+        form.addEventListener('submit', function(e) {
+            e.preventDefault(); // Chặn việc chuyển trang ngay lập tức
+            
+            const data = new FormData(form);
+            
+            // Gửi dữ liệu ngầm (AJAX) đến Formspree
+            fetch(form.action, {
+                method: 'POST',
+                body: data,
+                headers: { 'Accept': 'application/json' }
+            }).then(response => {
+                if (response.ok) {
+                    // CHỈ chuyển hướng KHI dữ liệu đã gửi xong thành công
+                    window.location.href = "yes.html";
+                } else {
+                    alert("Có lỗi xảy ra, thử lại sau nhé!");
+                }
+            });
+        });
+        
         let clickCount = 0;
         const messages = [
             "真的不要嗎？🥺",
