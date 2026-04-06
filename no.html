@@ -2,17 +2,98 @@
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
-    <title>遺憾... 💔</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>有點難過... 💔</title>
     <style>
-        body { background-color: #f8f9fa; display: flex; justify-content: center; align-items: center; height: 100vh; font-family: sans-serif; text-align: center; }
-        .card { background: white; padding: 3rem; border-radius: 20px; border-top: 5px solid #6c757d; }
-        h1 { color: #6c757d; }
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #666666 20%, #d1cfd0 80%);
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            overflow: hidden;
+        }
+
+        .card {
+            background: white;
+            padding: 3rem 2.5rem;
+            border-radius: 30px;
+            box-shadow: 0 15px 40px rgba(150, 100, 120, 0.15);
+            text-align: center;
+            max-width: 420px;
+            position: relative;
+        }
+
+        h1 {
+            color: #9c6d7f;
+            font-size: 2.6rem;
+            margin: 0 0 1rem 0;
+        }
+
+        p {
+            color: #6b4a5a;
+            font-size: 1.35rem;
+            line-height: 1.7;
+        }
+
+        .sad-heart {
+            font-size: 80px;
+            animation: heartbeat 1.8s infinite;
+            display: block;
+            margin: 10px 0 20px;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+
+        .tears {
+            position: absolute;
+            font-size: 24px;
+            animation: fall 4s linear infinite;
+            opacity: 0.;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-100px); opacity: 0; }
+            20% { opacity: 1; }
+            100% { transform: translateY(400px); opacity: 0; }
+        }
     </style>
 </head>
 <body>
     <div class="card">
+        <div class="sad-heart">💔</div>
         <h1>好吧... 我知道了 🥺</h1>
-        <p style="color: #495057;">雖然有點難過，但還是謝謝妳點開這個網站。<br> 😥😥😥😥😥</p>
+        <p>雖然有點難過<br>但還是很謝謝妳願意看這個網站</p>
     </div>
+
+    <script>
+        // Cute falling tears
+        function createTear() {
+            const tear = document.createElement('div');
+            tear.classList.add('tears');
+            tear.innerHTML = '💧';
+            tear.style.left = Math.random() * 100 + 'vw';
+            tear.style.animationDuration = (Math.random() * 2 + 3) + 's';
+            tear.style.fontSize = (Math.random() * 12 + 18) + 'px';
+            document.body.appendChild(tear);
+
+            setTimeout(() => tear.remove(), 6000);
+        }
+
+        // Start falling tears
+        setInterval(createTear, 180);
+
+        // Extra gentle tears at the beginning
+        setTimeout(() => {
+            for (let i = 0; i < 8; i++) {
+                setTimeout(createTear, i * 120);
+            }
+        }, 800);
+    </script>
 </body>
 </html>
