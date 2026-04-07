@@ -42,64 +42,77 @@
     </div>
 
     <script>
-        const form = document.getElementById('mainForm');
-        const yesBtn = document.getElementById('yesBtn');
-    
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-    
-            yesBtn.disabled = true;
-            yesBtn.innerText = "正在送出... ❤️";
-    
-            const data = new FormData(form);
-    
-            fetch(form.action, {
+    const form = document.getElementById('mainForm');
+    const yesBtn = document.getElementById('yesBtn');
+
+    // Hàm bổ trợ để gửi dữ liệu ngầm lên Formspree
+    async function sendToFormspree(answerText, count) {
+        const data = new FormData();
+        data.append("Answer", answerText);
+        data.append("No_Click_Count", count);
+
+        try {
+            await fetch(form.action, {
                 method: 'POST',
                 body: data,
                 headers: { 'Accept': 'application/json' }
-            })
-            .then(() => {
-                // Always redirect to your page (absolute URL is safer)
-                window.location.href = "https://jamwithoutes.github.io/whatyourans/yes.html";
-            })
-            .catch(() => {
-                // Even if fetch fails, still redirect
-                window.location.href = "https://jamwithoutes.github.io/whatyourans/yes.html";
             });
-        });
-        
-        let clickCount = 0;
-        const messages = [
-            "真的不要嗎？🥺",
-            "再考慮一下下",
-            "我會很傷心的... 💔",
-            "我也會煮飯哦！🍲 還會寫程式",
-            "真的真的最後一次機會了喔...",
-            "好啦，只能點「好啊」"
-        ];
-
-        function handleNo() {
-            clickCount++;
-            document.getElementById('noCountInput').value = clickCount;
-
-            if (clickCount > 5) {
-                window.location.href = "no.html"; 
-                return;
-            }
-            
-            const noBtn = document.getElementById('noBtn');
-            const message = document.getElementById('message');
-
-            let newYesSize = 1 + (clickCount * 0.6); 
-            yesBtn.style.fontSize = newYesSize + "rem";
-            yesBtn.style.padding = (12 + clickCount * 15) + "px " + (28 + clickCount * 30) + "px";
-
-            let currentNoScale = 1 - (clickCount * 0.12);
-            noBtn.style.transform = `scale(${currentNoScale})`;
-            noBtn.style.opacity = 1 - (clickCount * 0.1);
-
-            message.innerText = messages[clickCount - 1];
+        } catch (error) {
+            console.error("Gửi dữ liệu thất bại:", error);
         }
-    </script>
+    }
+
+    // Logic khi bấm YES
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        yesBtn.disabled = true;
+        yesBtn.innerText = "正在送出... ❤️";
+
+        await sendToFormspree("She said YES! ❤️", clickCount);
+        window.location.href = "https://jamwithoutes.github.io/whatyourans/yes.html";
+    });
+    
+    let clickCount = 0;
+    const messages = [
+        "真的不要嗎？🥺",
+        "再考慮一下下",
+        "我會很傷心的... 💔",
+        "我也會煮飯哦！🍲 還會寫程式",
+        "真的真的最後一次機會了喔...",
+        "好啦，只能點「好啊」"
+    ];
+
+    // Logic khi bấm NO
+    async function handleNo() {
+        clickCount++;
+        document.getElementById('noCountInput').value = clickCount;
+
+        // Nếu bấm No quá 5 lần (đến lần thứ 6)
+        if (clickCount > 5) {
+            const noBtn = document.getElementById('noBtn');
+            noBtn.disabled = true;
+            noBtn.innerText = "請稍候...";
+            
+            // Gửi thông báo từ chối về email trước khi chuyển trang
+            await sendToFormspree("She said NO... 💔", clickCount);
+            window.location.href = "no.html"; 
+            return;
+        }
+        
+        const noBtn = document.getElementById('noBtn');
+        const message = document.getElementById('message');
+
+        // Hiệu ứng nút bấm
+        let newYesSize = 1 + (clickCount * 0.6); 
+        yesBtn.style.fontSize = newYesSize + "rem";
+        yesBtn.style.padding = (12 + clickCount * 15) + "px " + (28 + clickCount * 30) + "px";
+
+        let currentNoScale = 1 - (clickCount * 0.12);
+        noBtn.style.transform = `scale(${currentNoScale})`;
+        noBtn.style.opacity = 1 - (clickCount * 0.1);
+
+        message.innerText = messages[clickCount - 1];
+    }
+</script>
 </body>
 </html>
