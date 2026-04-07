@@ -5,53 +5,115 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>給你啦 ❤️</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #fff0f3; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; overflow: hidden; }
-        .card { background: white; padding: 2rem; border-radius: 20px; box-shadow: 0 10px 25px rgba(255,182,193,0.5); text-align: center; max-width: 450px; width: 90%; transition: all 0.3s; }
-        h1 { color: #ff4d6d; margin-bottom: 10px; }
-        p { color: #590d22; font-size: 1.1rem; min-height: 4em; display: flex; align-items: center; justify-content: center; }
-        .btn-group { margin-top: 30px; display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 15px; }
-        
-        button { border: none; border-radius: 50px; cursor: pointer; font-weight: bold; transition: all 0.3s ease-in-out; white-space: nowrap; }
-        
-        .btn-yes { background-color: #ff4d6d; color: white; padding: 12px 28px; font-size: 1rem; }
-        .btn-yes:hover { background-color: #ff758f; transform: scale(1.05); }
-        .btn-yes:disabled { background-color: #ffb7c5; cursor: not-allowed; }
-        
-        .btn-no { background-color: #ced4da; color: #495057; padding: 12px 28px; font-size: 1rem; }
-        .btn-no:hover { background-color: #c2c1be; }
-
-        form { display: inline; margin: 0; padding: 0; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, sans-serif; 
+            background-color: #fff0f3; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            margin: 0; 
+            overflow: hidden; 
+        }
+        .card { 
+            background: white; 
+            padding: 2.5rem; 
+            border-radius: 20px; 
+            box-shadow: 0 10px 25px rgba(255,182,193,0.5); 
+            text-align: center; 
+            max-width: 450px; 
+            width: 90%; 
+            transition: all 0.3s; 
+        }
+        h1 { color: #ff4d6d; margin-bottom: 15px; }
+        p { 
+            color: #590d22; 
+            font-size: 1.1rem; 
+            min-height: 4.5em; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            line-height: 1.4;
+        }
+        .btn-group { 
+            margin-top: 30px; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            flex-wrap: wrap; 
+            gap: 15px; 
+        }
+        button { 
+            border: none; 
+            border-radius: 50px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            transition: all 0.3s ease-in-out; 
+            white-space: nowrap; 
+        }
+        .btn-yes { 
+            background-color: #ff4d6d; 
+            color: white; 
+            padding: 12px 28px; 
+            font-size: 1.1rem; 
+        }
+        .btn-yes:hover { 
+            background-color: #ff758f; 
+            transform: scale(1.05); 
+        }
+        .btn-yes:disabled { 
+            background-color: #ffb7c5; 
+            cursor: not-allowed; 
+        }
+        .btn-no { 
+            background-color: #ced4da; 
+            color: #495057; 
+            padding: 12px 28px; 
+            font-size: 1rem; 
+        }
     </style>
 </head>
 <body>
     <div class="card">
         <h1 id="heading">讀完了嗎？✨</h1>
         <p id="message">我考慮了很久才把這個網站寄給你。<br>你願意給我們一個機會嗎？</p>
-        
+       
         <div class="btn-group">
             <form action="https://formspree.io/f/mojpywle" method="POST" id="mainForm">
-                <input type="hidden" name="Answer" value="She said YES! ❤️">
+                <input type="hidden" name="Answer" id="answerInput" value="She said YES! ❤️">
                 <input type="hidden" name="No_Click_Count" id="noCountInput" value="0">
                 <input type="hidden" name="_next" value="https://jamwithoutes.github.io/whatyourans/yes.html">
                 
                 <button type="submit" class="btn-yes" id="yesBtn">好啊 ❤️</button>
             </form>
-
-            <button type="button" class="btn-no" id="noBtn" onclick="handleNo()">不要!!!</button>
+            <button type="button" class="btn-no" id="noBtn">不要!!!</button>
         </div>
     </div>
 
-    // JavaScript
     <script>
         const form = document.getElementById('mainForm');
         const yesBtn = document.getElementById('yesBtn');
-    
-        // Hàm bổ trợ để gửi dữ liệu ngầm lên Formspree
+        const noBtn = document.getElementById('noBtn');
+        const message = document.getElementById('message');
+        const noCountInput = document.getElementById('noCountInput');
+
+        let clickCount = 0;
+
+        const messages = [
+            "真的不要嗎？🥺",
+            "再考慮一下下啦～",
+            "我會很傷心的... 💔",
+            "我也會煮飯哦！🍲 還會寫程式",
+            "真的真的最後一次機會了喔...",
+            "你真的要拒絕我嗎？😭"
+        ];
+
+        // 送資料到 Formspree
         async function sendToFormspree(answerText, count) {
             const data = new FormData();
             data.append("Answer", answerText);
             data.append("No_Click_Count", count);
-    
+
             try {
                 await fetch(form.action, {
                     method: 'POST',
@@ -59,60 +121,51 @@
                     headers: { 'Accept': 'application/json' }
                 });
             } catch (error) {
-                console.error("Gửi dữ liệu thất bại:", error);
+                console.error("送資料失敗:", error);
             }
         }
-    
-        // Logic khi bấm YES
+
+        // 點「好啊」
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
+            
             yesBtn.disabled = true;
             yesBtn.innerText = "正在送出... ❤️";
-    
+
             await sendToFormspree("She said YES! ❤️", clickCount);
             window.location.href = "https://jamwithoutes.github.io/whatyourans/yes.html";
         });
-        
-        let clickCount = 0;
-        const messages = [
-            "真的不要嗎？🥺",
-            "再考慮一下下",
-            "我會很傷心的... 💔",
-            "我也會煮飯哦！🍲 還會寫程式",
-            "真的真的最後一次機會了喔...",
-        ];
-    
-        // Logic khi bấm NO
+
+        // 點「不要」
         async function handleNo() {
             clickCount++;
-            document.getElementById('noCountInput').value = clickCount;
-    
-            // Nếu bấm No quá 5 lần (đến lần thứ 6)
+            noCountInput.value = clickCount;
+
             if (clickCount > 5) {
-                const noBtn = document.getElementById('noBtn');
                 noBtn.disabled = true;
                 noBtn.innerText = "請稍候...";
                 
-                // Gửi thông báo từ chối về email trước khi chuyển trang
                 await sendToFormspree("She said NO... 💔", clickCount);
-                window.location.href = "no.html"; 
+                window.location.href = "no.html";   // 改成你實際的 no.html 路徑
                 return;
             }
-            
-            const noBtn = document.getElementById('noBtn');
-            const message = document.getElementById('message');
-    
-            // Hiệu ứng nút bấm
-            let newYesSize = 1 + (clickCount * 0.6); 
-            yesBtn.style.fontSize = newYesSize + "rem";
-            yesBtn.style.padding = (12 + clickCount * 15) + "px " + (28 + clickCount * 30) + "px";
-    
-            let currentNoScale = 1 - (clickCount * 0.12);
-            noBtn.style.transform = `scale(${currentNoScale})`;
-            noBtn.style.opacity = 1 - (clickCount * 0.1);
-    
+
+            // 改變訊息
             message.innerText = messages[clickCount - 1];
+
+            // Yes 按鈕變大
+            const newSize = 1.1 + (clickCount * 0.25);
+            yesBtn.style.fontSize = newSize + "rem";
+            yesBtn.style.padding = (12 + clickCount * 12) + "px " + (32 + clickCount * 18) + "px";
+
+            // No 按鈕變小 + 透明
+            const scale = Math.max(0.6, 1 - clickCount * 0.12);
+            noBtn.style.transform = `scale(${scale})`;
+            noBtn.style.opacity = Math.max(0.4, 1 - clickCount * 0.1);
         }
+
+        // 綁定不要按鈕
+        noBtn.addEventListener('click', handleNo);
     </script>
 </body>
 </html>
